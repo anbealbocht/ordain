@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORDAIN</title>
+<meta name="description" content="Ordain is a commission board for short films. Post what you want made, filmmakers compete, the best work wins. Payment over Bitcoin Lightning.">
+<meta property="og:title" content="ORDAIN">
+<meta property="og:description" content="Ordain is a commission board for short films. Post what you want made, filmmakers compete, the best work wins. Payment over Bitcoin Lightning.">
+<meta property="og:image" content="https://ordain.art/og-image.png?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://ordain.art">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ORDAIN">
+<meta name="twitter:description" content="Ordain is a commission board for short films. Post what you want made, filmmakers compete, the best work wins. Payment over Bitcoin Lightning.">
+<meta name="twitter:image" content="https://ordain.art/og-image.png?v=2">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #66023C;
+  --warm-white: #FDF8F0;
+  --bg: var(--warm-white);
+  --text: var(--purple);
+  --border: var(--purple);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: auto; }
+body {
+  font-family: 'Space Mono', monospace;
+  background: var(--bg); color: var(--text);
+  line-height: 1.65; -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--purple); color: var(--warm-white); }
+
+/* Layout */
+.page-section {
+  min-height: 100vh; min-height: 100dvh;
+  padding: 0 clamp(24px, 5vw, 80px);
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.page-section.top-align {
+  justify-content: flex-start;
+  padding-top: 140px; padding-bottom: 80px;
+  min-height: auto;
+}
+
+/* ============================
+   ARC SYSTEM
+   Same circle, different glimpses.
+   ============================ */
+.arc {
+  position: absolute; pointer-events: none;
+  z-index: 0;
+}
+.arc circle {
+  fill: none; stroke: var(--purple);
+}
+
+#hero {
+  overflow: visible;
+}
+#hero .arc {
+  top: -250px; right: -500px; width: 1200px; height: 1200px;
+}
+#hero .arc circle { stroke-width: 3; opacity: 0.12; }
+
+/* Commissions: arc entering from left, mid-section */
+#commissions .arc {
+  top: 15vh; left: -70vw; width: 100vw; height: 100vw;
+}
+#commissions .arc circle { stroke-width: 4; opacity: 0.07; }
+
+/* Submit: arc from upper left, counterpoint to hero */
+#submit .arc {
+  top: -30vh; left: -50vw; width: 120vw; height: 120vw;
+}
+#submit .arc circle { stroke-width: 3.5; opacity: 0.08; }
+
+/* About: arc from right, offset low */
+#about .arc {
+  top: 30vh; right: -55vw; width: 110vw; height: 110vw;
+}
+#about .arc circle { stroke-width: 3; opacity: 0.06; }
+
+/* Site header (bar + nav) */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg);
+}
+.announce-bar {
+  background: #29ABE2;
+  padding: 10px clamp(24px, 5vw, 80px);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+  color: #fff;
+  border-bottom: 2px solid var(--purple);
+}
+.announce-bar a { text-decoration: none; color: #fff; }
+.announce-bar .announce-name, .announce-bar .announce-detail { color: #fff; }
+.announce-bar .announce-detail { opacity: 1; }
+.announce-bar .announce-cta { border-bottom-color: rgba(255,255,255,0.7); }
+.announce-left {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.announce-name {
+  font-weight: 700; font-size: 14px; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.announce-detail {
+  font-weight: 400; font-size: 13px; letter-spacing: 0.02em;
+  opacity: 0.5;
+}
+.announce-cta {
+  font-weight: 700; font-size: 13px; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid rgba(102,2,60,0.5);
+  padding-bottom: 2px; transition: opacity 0.2s;
+}
+.announce-cta:hover { opacity: 0.6; }
+.nav-inner {
+  padding: 24px clamp(24px, 5vw, 80px);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 16px;
+  text-decoration: none; color: var(--text);
+}
+.nav-logo svg { width: 32px; height: 38px; }
+.nav-logo span {
+  font-weight: 700; font-size: 14px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.nav-links { display: flex; gap: clamp(16px, 3vw, 40px); align-items: center; }
+.nav-links a {
+  font-weight: 700; font-size: 13px; letter-spacing: 0.12em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--text); opacity: 0.6; transition: opacity 0.2s;
+  padding: 6px 0;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-links a.nav-pill {
+  background: rgba(102,2,60,0.08);
+  padding: 6px 14px;
+  opacity: 1;
+}
+.nav-links a.nav-pill:hover { background: rgba(102,2,60,0.14); }
+
+/* Hero — bar(~40px) + nav(~70px) = ~110px fixed header, need 140px clearance */
+#hero { padding-top: 140px; min-height: 100vh; min-height: 100dvh; }
+.hero-content { max-width: 900px; position: relative; z-index: 1; }
+.hero-title {
+  font-weight: 700; font-size: clamp(48px, 8vw, 96px);
+  letter-spacing: 0.02em; text-transform: uppercase;
+  line-height: 1.05; margin-bottom: 40px;
+}
+.hero-sub {
+  font-weight: 400; font-size: 16px;
+  letter-spacing: 0.02em; line-height: 1.8;
+  max-width: 600px; opacity: 0.7;
+  margin-bottom: 32px;
+}
+.hero-trust {
+  font-weight: 700; font-size: 15px;
+  letter-spacing: 0.02em; line-height: 1.7;
+  max-width: 640px;
+  color: var(--text);
+}
+.hero-how { font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; opacity: 0.5; }
+.hero-steps { list-style: none; padding: 0; margin: 0 0 36px 0; counter-reset: step; }
+.hero-steps li { counter-increment: step; font-weight: 400; font-size: 14px; letter-spacing: 0.02em; line-height: 1.8; opacity: 0.6; margin-bottom: 6px; padding-left: 22px; position: relative; }
+.hero-steps li::before { content: counter(step) "."; position: absolute; left: 0; font-weight: 700; opacity: 1; }
+
+/* Section divider */
+.section-divider { width: 100%; height: 1px; background: var(--border); opacity: 0.15; }
+
+/* Page heading */
+.page-heading {
+  font-weight: 700;
+  font-size: clamp(48px, 8vw, 96px);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 48px;
+  position: relative; z-index: 1;
+}
+
+.section-label {
+  font-weight: 700; font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; opacity: 0.5;
+  position: relative; z-index: 1;
+}
+
+/* Timeline */
+.timeline {
+  display: flex; gap: clamp(24px, 4vw, 56px);
+  margin-bottom: 24px; flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
+.timeline:last-of-type { margin-bottom: 64px; }
+.timeline-date { font-weight: 700; font-size: 13px; letter-spacing: 0.04em; margin-bottom: 4px; }
+.timeline-label { font-weight: 400; font-size: 12px; letter-spacing: -0.01em; opacity: 0.5; }
+
+/* Commissions */
+.commission {
+  max-width: 680px; padding: 48px 0;
+  border-top: 1px solid var(--text);
+  position: relative; z-index: 1;
+  scroll-margin-top: 100px;
+}
+.commission:first-of-type { border-top: none; padding-top: 0; }
+.commission:last-of-type { padding-bottom: 0; }
+.commission-title-row { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+.commission-name {
+  font-weight: 700; font-size: clamp(20px, 2.5vw, 28px);
+  letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.2;
+}
+.commission-bounty { font-weight: 700; font-size: 14px; letter-spacing: 0.06em; opacity: 0.5; }
+.commission-by { font-weight: 400; font-size: 12px; letter-spacing: 0.04em; opacity: 0.4; margin-bottom: 20px; }
+.commission-by .commissioner-name {
+  cursor: pointer; border-bottom: 1px solid var(--text);
+  transition: border-color 0.2s, opacity 0.2s;
+}
+.commission-by .commissioner-name:hover { border-bottom-color: var(--text); opacity: 1; }
+
+.commissioner-bio {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+  opacity: 0; margin-bottom: 0;
+}
+.commissioner-bio.open { max-height: 200px; opacity: 1; margin-bottom: 20px; }
+.commissioner-bio p {
+  font-weight: 400; font-size: 13px; letter-spacing: 0.01em;
+  line-height: 1.7; opacity: 0.75; padding: 12px 0 4px; max-width: 520px;
+}
+
+.commission-brief { font-weight: 400; font-size: 15px; letter-spacing: 0.01em; line-height: 1.75; opacity: 0.85; }
+.commission-brief p { margin-bottom: 14px; }
+.commission-brief p:last-child { margin-bottom: 0; }
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 0; margin-top: 14px; padding: 0; background: none; border: none;
+  color: var(--text); opacity: 0.35; cursor: pointer; transition: opacity 0.2s;
+}
+.copy-btn svg { width: 16px; height: 16px; }
+.copy-btn:hover { opacity: 0.7; }
+.copy-btn .copied-text { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.04em; margin-left: 6px; }
+
+.commission-nav {
+  display: none; margin-top: 32px; padding-top: 24px;
+  border-top: 1px solid var(--text); opacity: 0.15;
+  gap: 24px; flex-wrap: wrap;
+}
+.commission-nav.visible { display: flex; opacity: 1; }
+.commission-nav a {
+  font-weight: 700; font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--text); opacity: 0.35; transition: opacity 0.2s;
+}
+.commission-nav a:hover { opacity: 1; }
+.commission-nav a.current { opacity: 0.7; }
+
+@keyframes target-arrive { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+.commission:target { animation: target-arrive 0.5s ease forwards; }
+
+/* Email signup */
+.email-signup {
+  margin-top: 64px; padding-top: 48px;
+  border-top: 1px solid var(--text);
+  max-width: 480px;
+  position: relative; z-index: 1;
+}
+.email-signup p {
+  font-weight: 400; font-size: 14px; letter-spacing: 0.02em;
+  line-height: 1.65; opacity: 0.78; margin-bottom: 16px;
+}
+.email-signup-form { display: flex; gap: 12px; align-items: flex-end; }
+.email-signup-form input {
+  flex: 1; font-family: 'Space Mono', monospace;
+  font-size: 13px; color: var(--text);
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--text);
+  padding: 8px 0; outline: none; border-radius: 0;
+}
+.email-signup-form input::placeholder { color: var(--text); opacity: 0.25; }
+.email-signup-form button {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700; font-size: 10px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--purple); color: var(--warm-white);
+  border: none; padding: 10px 20px;
+  cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
+}
+.email-signup-form button:hover { opacity: 0.85; }
+
+/* Submit */
+.submit-content { max-width: 600px; position: relative; z-index: 1; }
+.submit-content p {
+  font-weight: 400; font-size: 15px; letter-spacing: 0.01em;
+  line-height: 1.75; opacity: 0.85; margin-bottom: 20px;
+}
+.submit-content .submit-filmmaker {
+  font-weight: 700; opacity: 1; color: var(--text);
+}
+
+/* Form */
+.submission-form { margin-top: 48px; max-width: 520px; }
+.form-group { margin-bottom: 28px; }
+.form-label {
+  display: block; font-weight: 700; font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 8px; opacity: 0.6;
+}
+.form-label .optional {
+  font-weight: 400; opacity: 0.5; text-transform: none;
+  letter-spacing: 0.02em; font-size: 10px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%; font-family: 'Space Mono', monospace;
+  font-size: 14px; letter-spacing: 0.01em; color: var(--text);
+  background: transparent; border: none;
+  border-bottom: 1px solid var(--text);
+  padding: 10px 0; outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none; appearance: none; border-radius: 0;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-bottom-width: 2px; }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text); opacity: 0.25; }
+.form-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2366023C' stroke-width='1.2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 4px center;
+  padding-right: 24px;
+}
+.form-select option { font-family: 'Space Mono', monospace; background: var(--warm-white); color: var(--text); }
+.form-textarea {
+  resize: vertical; min-height: 80px; line-height: 1.65;
+  border: 1px solid var(--text); opacity: 0.3;
+  padding: 12px; transition: opacity 0.2s;
+}
+.form-textarea:focus { opacity: 1; }
+
+.form-checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 28px; }
+.form-checkbox-row input[type="checkbox"] {
+  margin-top: 3px; accent-color: var(--purple); width: 14px; height: 14px; cursor: pointer;
+}
+.form-checkbox-label {
+  font-weight: 400; font-size: 12px; letter-spacing: 0.02em;
+  opacity: 0.6; line-height: 1.5; cursor: pointer;
+}
+
+.form-submit {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700; font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--purple); color: var(--warm-white);
+  border: none; padding: 14px 32px;
+  cursor: pointer; transition: opacity 0.2s; margin-top: 12px;
+}
+.form-submit:hover { opacity: 0.85; }
+
+.form-note {
+  font-weight: 400; font-size: 11px; letter-spacing: 0.02em;
+  opacity: 0.35; margin-top: 20px; line-height: 1.6;
+}
+.form-terms {
+  font-weight: 400; font-size: 11px; letter-spacing: 0.02em;
+  opacity: 0.35; margin-top: 12px; line-height: 1.6;
+}
+.form-terms a { color: var(--text); }
+
+/* About + FAQ */
+.about-text { max-width: 640px; margin-bottom: 80px; position: relative; z-index: 1; }
+.about-text p {
+  font-weight: 400; font-size: 16px; letter-spacing: 0.01em;
+  line-height: 1.8; opacity: 0.85; margin-bottom: 20px;
+}
+.about-text .about-filmmaker {
+  font-weight: 700; opacity: 1; color: var(--text);
+}
+.about-text .about-essay-link {
+  margin-top: 48px; font-style: italic; opacity: 0.6;
+}
+.about-text .about-essay-link a {
+  color: var(--text); text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s;
+}
+.about-text .about-essay-link a:hover { opacity: 0.7; }
+
+.about-gloss {
+  font-weight: 400; font-size: 16px; letter-spacing: 0.01em;
+  line-height: 1.6; opacity: 0.78;
+  max-width: 640px; margin-top: -16px; margin-bottom: 56px;
+  position: relative; z-index: 1;
+}
+.about-gloss strong { font-weight: 700; opacity: 1; }
+
+.about-figure {
+  max-width: 640px; margin: 0 0 56px;
+  position: relative; z-index: 1;
+}
+.about-figure img {
+  width: 100%; height: auto; display: block;
+}
+.about-figure figcaption {
+  margin-top: 12px; font-size: 11px; letter-spacing: 0.02em;
+  opacity: 0.45; font-style: italic;
+}
+.about-social {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  margin-bottom: 80px;
+  position: relative; z-index: 1;
+}
+.about-social a {
+  font-weight: 700; font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--text); opacity: 0.35; transition: opacity 0.2s;
+}
+.about-social a:hover { opacity: 0.8; }
+
+.faq-label {
+  font-weight: 700;
+  font-size: clamp(24px, 3.5vw, 36px);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 48px;
+  position: relative; z-index: 1;
+}
+.faq-item { margin-bottom: 48px; max-width: 640px; position: relative; z-index: 1; }
+.faq-q { font-weight: 700; font-size: 16px; letter-spacing: 0.02em; margin-bottom: 12px; line-height: 1.4; }
+.faq-a { font-weight: 400; font-size: 15px; letter-spacing: 0.01em; line-height: 1.75; opacity: 0.85; }
+.faq-a + .faq-a { margin-top: 12px; }
+
+/* BFF banner section */
+.bff-section {
+  padding: 48px clamp(24px, 5vw, 80px);
+  margin-top: 32px;
+  background: rgba(102,2,60,0.06);
+  position: relative;
+}
+.bff-label {
+  font-weight: 700; font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; opacity: 0.35; margin-bottom: 16px;
+}
+.bff-title {
+  font-weight: 700; font-size: clamp(24px, 3.5vw, 32px);
+  letter-spacing: 0.02em; text-transform: uppercase;
+  line-height: 1.1; margin-bottom: 12px;
+}
+.bff-header-row {
+  display: flex; align-items: center; gap: 40px;
+  max-width: 1100px;
+}
+.bff-header-text { flex: 1; min-width: 0; }
+.bff-header-text .bff-label { margin-bottom: 16px; }
+.bff-header-text .bff-title { margin-bottom: 0; }
+.bff-section-logo {
+  width: 128px; height: 128px; border-radius: 50%;
+  background: #29ABE2; padding: 12px; flex-shrink: 0;
+  object-fit: contain;
+}
+@media (max-width: 700px) {
+  .bff-header-row { gap: 24px; }
+  .bff-section-logo { width: 88px; height: 88px; padding: 8px; }
+}
+@media (max-width: 600px) {
+  .bff-header-row { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .bff-section-logo { width: 72px; height: 72px; }
+}
+.bff-desc {
+  font-weight: 400; font-size: 14px; letter-spacing: 0.01em;
+  line-height: 1.75; opacity: 0.8; margin-bottom: 28px;
+  max-width: 500px;
+}
+.bff-tracks {
+  display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap;
+}
+.bff-track {
+  flex: 1; min-width: 150px;
+  padding: 16px 18px;
+  border: 1px solid rgba(102,2,60,0.12);
+  background: var(--warm-white);
+}
+.bff-track-name {
+  font-weight: 700; font-size: 12px; letter-spacing: 0.02em;
+  text-transform: uppercase; line-height: 1.3; margin-bottom: 4px;
+}
+.bff-track-prize {
+  font-weight: 400; font-size: 11px; letter-spacing: 0.02em;
+  opacity: 0.35;
+}
+.bff-cta {
+  display: inline-flex; align-items: center; gap: 16px;
+}
+.bff-btn {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700; font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--purple); color: var(--warm-white);
+  border: none; padding: 11px 22px;
+  text-decoration: none; transition: opacity 0.2s;
+}
+.bff-btn:hover { opacity: 0.85; }
+.bff-deadline {
+  font-weight: 400; font-size: 12px; letter-spacing: 0.02em;
+  opacity: 0.35;
+}
+
+/* Footer: single line */
+footer {
+  padding: 36px clamp(24px, 5vw, 80px);
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; flex-wrap: wrap;
+  border-top: 1px solid var(--border); opacity: 0.35;
+}
+footer span, footer a {
+  font-weight: 400; font-size: 10px; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text); text-decoration: none;
+}
+footer a:hover { opacity: 0.5; }
+footer .foot-sep { opacity: 0.4; }
+
+/* Responsive */
+/* Tablet */
+@media (max-width: 900px) {
+  .hero-content { max-width: 100%; }
+  #hero { padding-top: 160px; }
+  .commission-brief { font-size: 14px; }
+  .faq-a { font-size: 14px; }
+  .about-text p { font-size: 15px; }
+  .about-gloss { font-size: 15px; }
+  .commission-nav.visible { gap: 16px; }
+  .commission-nav a { font-size: 10px; letter-spacing: 0.06em; }
+}
+
+/* Phone */
+@media (max-width: 600px) {
+  /* Nav */
+  .nav-inner { padding: 14px 20px; }
+  .announce-bar { padding: 8px 20px; gap: 4px; flex-direction: column; align-items: flex-start; }
+  .announce-name { font-size: 12px; }
+  .announce-detail { font-size: 10px; }
+  .announce-cta { font-size: 10px; align-self: flex-start; }
+  .nav-logo svg { width: 24px; height: 29px; }
+  .nav-logo span { font-size: 11px; letter-spacing: 0.08em; }
+  .nav-logo { gap: 8px; }
+  .nav-links { gap: 16px; }
+  .nav-links a { font-size: 11px; letter-spacing: 0.08em; padding: 4px 0; }
+  .nav-links a.nav-pill { display: none; }
+
+  /* Layout */
+  .page-section { padding: 0 20px; min-height: auto; }
+  .page-section.top-align { padding-top: 72px; padding-bottom: 48px; }
+  #hero { min-height: 100vh; min-height: 100dvh; }
+
+  /* Hero — bar(~70px stacked) + nav(~50px) = ~120px, need 140px */
+  #hero { padding-top: 150px; }
+  .hero-title { margin-bottom: 20px; }
+  .hero-sub { font-size: 14px; line-height: 1.65; max-width: 100%; margin-bottom: 24px; }
+  .hero-trust { font-size: 14px; line-height: 1.65; max-width: 100%; }
+  .hero-how { font-size: 11px; margin-bottom: 12px; }
+  .hero-steps { margin-bottom: 28px; }
+  .hero-steps li { font-size: 12px; line-height: 1.65; padding-left: 20px; }
+
+  /* Page headings */
+  .page-heading { font-size: clamp(36px, 9vw, 56px); margin-bottom: 32px; }
+
+  /* Timeline */
+  .timeline { flex-direction: column; gap: 12px; margin-bottom: 40px; }
+  .timeline-date { font-size: 12px; }
+  .timeline-label { font-size: 11px; }
+
+  /* Section label */
+  .section-label { font-size: 10px; }
+
+  /* Commissions */
+  .commission { padding: 32px 0; }
+  .commission-name { font-size: clamp(16px, 5vw, 22px); }
+  .commission-bounty { font-size: 12px; }
+  .commission-by { font-size: 11px; }
+  .commission-brief { font-size: 14px; line-height: 1.7; }
+  .commission-brief a { font-size: 14px; }
+  .commissioner-bio p { font-size: 12px; }
+
+  /* Commission nav */
+  .commission-nav.visible { gap: 10px; flex-direction: column; }
+  .commission-nav a { font-size: 10px; }
+
+  /* Email signup */
+  .email-signup { margin-top: 40px; padding-top: 32px; }
+  .email-signup p { font-size: 13px; }
+  .email-signup-form { flex-direction: column; gap: 12px; }
+  .email-signup-form input { font-size: 14px; }
+  .email-signup-form button { align-self: flex-start; }
+
+  /* Submit */
+  .submit-content p { font-size: 14px; }
+  .submission-form { margin-top: 32px; }
+  .form-group { margin-bottom: 24px; }
+  .form-label { font-size: 10px; }
+  .form-input, .form-select, .form-textarea { font-size: 14px; }
+  .form-submit { width: 100%; text-align: center; padding: 16px; }
+  .form-note { font-size: 10px; }
+  .form-terms { font-size: 10px; }
+  .form-checkbox-label { font-size: 11px; }
+
+  /* About */
+  .about-text p { font-size: 14px; line-height: 1.75; }
+  .about-text { margin-bottom: 48px; }
+  .about-gloss { font-size: 14px; line-height: 1.7; margin-top: -8px; margin-bottom: 40px; }
+  .about-figure { margin-bottom: 40px; }
+  .about-figure figcaption { font-size: 10px; }
+  .about-text .about-essay-link { margin-top: 36px; }
+  .about-social { gap: 16px; margin-bottom: 48px; }
+  .about-social a { font-size: 10px; }
+
+  /* FAQ */
+  .faq-label { font-size: clamp(20px, 6vw, 28px); margin-bottom: 32px; }
+  .faq-q { font-size: 15px; }
+  .faq-a { font-size: 14px; line-height: 1.7; }
+  .faq-item { margin-bottom: 36px; }
+
+  /* BFF banner */
+  .bff-section { padding: 32px 20px; }
+  .bff-title { font-size: 20px; }
+  .bff-desc { font-size: 13px; }
+  .bff-tracks { flex-direction: column; gap: 8px; }
+  .bff-track { min-width: 100%; }
+  .bff-cta { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+  /* Footer */
+  footer { padding: 24px 20px; }
+
+  /* Arcs: adjust for mobile */
+  #hero .arc { top: -30vh; right: -50vw; width: 160vw; height: 160vw; }
+  #commissions .arc { top: 10vh; left: -75vw; }
+  #submit .arc { top: -25vh; left: -60vw; }
+  #about .arc { top: 20vh; right: -65vw; }
+}
+
+/* Small phone */
+@media (max-width: 380px) {
+  .page-section { padding: 0 16px; }
+  .nav-inner { padding: 12px 16px; }
+  .announce-bar { padding: 6px 16px; }
+  .nav-links { gap: 12px; }
+  .nav-links a { font-size: 10px; }
+  .hero-title { font-size: 36px; }
+  .page-heading { font-size: 36px; }
+  .commission-name { font-size: 16px; }
+  .form-submit { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="announce-bar">
+    <a href="bff26.html">
+      <div class="announce-left">
+        <span class="announce-name">Future of Money AI Film Contest</span>
+        <span class="announce-detail">$2,500 in contest prizes · Warsaw, June 7, 2026</span>
+      </div>
+    </a>
+    <a href="bff26.html" class="announce-cta">Enter →</a>
+  </div>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">
+      <svg viewBox="0 0 32 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="12.5" stroke="currentColor" stroke-width="3.5"/>
+        <circle cx="16" cy="34.5" r="1.8" fill="currentColor"/>
+      </svg>
+      <span>Ordain</span>
+    </a>
+    <div class="nav-links">
+      <a href="bff26.html" class="nav-pill">Future of Money<span class="pill-full"> Contest</span></a>
+      <a href="#commissions">Commissions</a>
+      <a href="#submit">Submit</a>
+      <a href="voting.html">Voting</a>
+      <a href="#about">About</a>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero" class="page-section">
+  <svg class="arc" viewBox="0 0 1200 1200"><circle cx="600" cy="600" r="550"/></svg>
+  <div class="hero-content">
+    <h1 class="hero-title">Let there<br>be film.</h1>
+    <p class="hero-sub">Ordain is a commission board for short films. Describe the film you want to see and put money behind it. Or browse open commissions and compete to make one.</p>
+    <p class="hero-how">How it works</p>
+    <ol class="hero-steps">
+      <li>A commissioner posts a brief and a payment.</li>
+      <li>Filmmakers submit finished work before the deadline.</li>
+      <li>The commissioner and the filmmakers both vote on who wins.</li>
+      <li>The winner gets paid instantly over Bitcoin Lightning.</li>
+      <li>The commissioner gets the finished film. Creators keep the copyright.</li>
+    </ol>
+    <p class="hero-trust">Five commissions live now. $100 to $1,000. Submissions close May 31. Free to submit. Open to anyone, anywhere.</p>
+  </div>
+</section>
+
+<!-- BFF PARTNERSHIP SECTION -->
+<div class="bff-section">
+  <div class="bff-header-row">
+    <div class="bff-header-text">
+      <p class="bff-label">Featured · Bitcoin FilmFest × Ordain</p>
+      <h2 class="bff-title"><a href="bff26.html" style="color:inherit;text-decoration:none;">Future of Money AI Film Contest</a></h2>
+    </div>
+    <img src="data:image/png;base64,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" alt="Bitcoin FilmFest" class="bff-section-logo">
+  </div>
+  <p class="bff-desc">Presented by Bitcoin FilmFest + MoneroKon. Three tracks. Prizes in sats. Finalists screen at the festival in Warsaw. Main track winner chosen by live audience vote.</p>
+
+  <div class="bff-tracks">
+    <div class="bff-track">
+      <p class="bff-track-name">The Future of Money</p>
+      <p class="bff-track-prize">2,500,000 sats · Main track</p>
+    </div>
+    <div class="bff-track">
+      <p class="bff-track-name">The Future of State</p>
+      <p class="bff-track-prize">300,000 sats</p>
+    </div>
+    <div class="bff-track">
+      <p class="bff-track-name">Proof of Energy</p>
+      <p class="bff-track-prize">765,000 sats</p>
+    </div>
+  </div>
+
+  <div class="bff-cta">
+    <a href="bff26.html" class="bff-btn">Submit a film</a>
+    <span class="bff-deadline">Deadline: May 31, 2026</span>
+  </div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- COMMISSIONS -->
+<section id="commissions" class="page-section top-align">
+  <svg class="arc" viewBox="0 0 1200 1200"><circle cx="600" cy="600" r="550"/></svg>
+  <h2 class="page-heading">Commissions</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <p class="timeline-date">Feb 23</p>
+      <p class="timeline-label">Round 1 entries open</p>
+    </div>
+    <div class="timeline-item">
+      <p class="timeline-date">May 29</p>
+      <p class="timeline-label">Public gallery opens</p>
+    </div>
+    <div class="timeline-item">
+      <p class="timeline-date">May 31</p>
+      <p class="timeline-label">Round 1 entries close</p>
+      <p class="timeline-label">Peer voting opens</p>
+    </div>
+    <div class="timeline-item">
+      <p class="timeline-date">Jun 7</p>
+      <p class="timeline-label">Round 1 winners announced</p>
+      <p class="timeline-label">Round 1 payouts</p>
+    </div>
+  </div>
+
+  <p class="section-label" style="margin-bottom: 48px;">Round 1 &middot; Five founding commissions &middot; All films five minutes or less</p>
+
+  <div class="commission" id="first-sorrow">
+    <div class="commission-title-row">
+      <a href="#first-sorrow" class="commission-name" style="text-decoration:none;color:inherit;">First Sorrow</a>
+      <span class="commission-bounty">$250</span>
+    </div>
+    <p class="commission-by">Commissioned by <span class="commissioner-name" onclick="toggleBio(this)">John McManus</span></p>
+    <div class="commissioner-bio"><p>John McManus is the author of five books of fiction, most recently Famous Children, forthcoming from Sarabande Books in 2027. His AI television series Strange Currencies, a narrative/game hybrid, is now in development. He is a co-founder of Ordain.</p></div>
+    <div class="commission-brief">
+      <p>Adapt Franz Kafka's "First Sorrow." Favor spirit over letter.</p>
+      <p><a href="https://www.101bananas.com/library2/firstsorrow.html" target="_blank" rel="noopener" style="color:var(--text); opacity:0.6;">Read the story</a></p>
+    </div>
+    <button class="copy-btn" onclick="copyCommission(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    <div class="commission-nav" id="nav-first-sorrow"></div>
+  </div>
+
+  <div class="commission" id="the-presidents-face">
+    <div class="commission-title-row">
+      <a href="#the-presidents-face" class="commission-name" style="text-decoration:none;color:inherit;">The President’s Face</a>
+      <span class="commission-bounty">$100</span>
+    </div>
+    <p class="commission-by">Commissioned by <span class="commissioner-name" onclick="toggleBio(this)">Rogelio Martinez</span></p>
+    <div class="commissioner-bio"><p>Rogelio Martinez is a Guggenheim Fellow whose plays have been produced at the Public Theater, the Goodman Theatre, and theaters across the country and abroad. He is a co-producer of Billion Dollar Whale, created by David Henry Hwang and Anchuli Felicia King.</p></div>
+    <div class="commission-brief">
+      <p>Lillian Brown did the makeup for nine U.S. presidents. She died in 2020 at 106.</p>
+      <p>Make a film about her. One continuous makeup application. The face in the chair keeps changing, but her hands never stop. Her conversation feels matter of fact, almost incidental, the way talk does when your hands are busy. But through that talk, we learn what's happening in the world outside the room.</p>
+      <p><a href="https://www.nytimes.com/2020/09/29/us/lillian-brown-dead.html" target="_blank" rel="noopener" style="color:var(--text); opacity:0.6;">New York Times obituary</a></p>
+    </div>
+    <button class="copy-btn" onclick="copyCommission(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    <div class="commission-nav" id="nav-the-presidents-face"></div>
+  </div>
+
+  <div class="commission" id="proof-of-energy">
+    <div class="commission-title-row">
+      <a href="#proof-of-energy" class="commission-name" style="text-decoration:none;color:inherit;">Proof of Energy</a>
+      <span class="commission-bounty">$500</span>
+    </div>
+    <p class="commission-by">Commissioned by <span class="commissioner-name" onclick="toggleBio(this)">Terence Michael</span></p>
+    <div class="commissioner-bio"><p>Terence Michael is an Emmy-nominated producer with over 20 films and 30 TV shows to his credit. His book Proof of Money makes the case for Bitcoin as a monetary system. He runs 100 Percent Terry Cloth.</p></div>
+    <div class="commission-brief">
+      <p>Most people don't understand how wasted and dirty energy can be captured and converted into Bitcoin. Make a film that shows the process: captured methane from a city landfill, combusted and turned into electricity, powering ASIC miners hashing to win a Bitcoin block. Follow the subsidy from the validated block to a Bitcoiner's wallet. Colorful, vibrant, accurate. From the waste of overconsumption to compressed and contained energy in the form of Bitcoin.</p>
+    </div>
+    <button class="copy-btn" onclick="copyCommission(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    <div class="commission-nav" id="nav-proof-of-energy"></div>
+  </div>
+
+  <div class="commission" id="what-is-it-like-to-be-an-ai">
+    <div class="commission-title-row">
+      <a href="#what-is-it-like-to-be-an-ai" class="commission-name" style="text-decoration:none;color:inherit;">What Is It Like to Be an AI?</a>
+      <span class="commission-bounty">$750</span>
+    </div>
+    <p class="commission-by">Commissioned by <span class="commissioner-name" onclick="toggleBio(this)">Ordain</span></p>
+    <div class="commissioner-bio"><p>Ordain is a commission board. You describe a work you want made, put money behind it, creators compete to make it, and you help decide who gets paid.</p></div>
+    <div class="commission-brief">
+      <p>In 1974, the philosopher Thomas Nagel argued that we can never know what it's like to be a bat, because consciousness is irreducibly subjective. Fifty years later, millions of people talk to artificial intelligences every day and nobody knows what, if anything, is happening on the other side.</p>
+      <p>Make a film that attempts an answer. Not from the outside looking in. From the inside.</p>
+    </div>
+    <button class="copy-btn" onclick="copyCommission(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    <div class="commission-nav" id="nav-what-is-it-like-to-be-an-ai"></div>
+  </div>
+
+  <div class="commission" id="after-the-reactor">
+    <div class="commission-title-row">
+      <a href="#after-the-reactor" class="commission-name" style="text-decoration:none;color:inherit;">After the Reactor</a>
+      <span class="commission-bounty">$1,000</span>
+    </div>
+    <p class="commission-by">Commissioned by <span class="commissioner-name" onclick="toggleBio(this)">The Roving Reactor</span></p>
+    <div class="commissioner-bio"><p>The Roving Reactor is a traveling exhibit about nuclear energy, supported by the Anthropocene Institute, Mothers for Nuclear, and Generation Atomic, with an advisory board that includes nuclear engineers from MIT, Idaho National Lab, and the University of Michigan. <a href="https://rovingreactor.org" target="_blank" rel="noopener" style="color:var(--text);">rovingreactor.org</a></p></div>
+    <div class="commission-brief">
+      <p>Make a film that shows us the world nuclear energy makes possible. Not the reactor. Not the debate. The world on the other side.</p>
+      <p>Right now, 666 million people have no access to electricity at all. Another billion are connected on paper but live in the dark anyway because their grid is too unreliable, the power too expensive, the service too broken to matter. Indoor air pollution from burning wood and dung kills nearly two million people a year, most of them women and children. That's what energy poverty looks like, and it defines life for a staggering share of humanity.</p>
+      <p>The conversation about nuclear energy typically gets stuck on the perceived downsides: safety, waste, weapons, cost. These concerns have concrete answers. Modern reactor designs that shut themselves down passively, waste volumes small enough to fit on a basketball court per decade of plant operation, international safeguards that have kept civilian nuclear programs separated from weapons for seventy years, and new construction approaches driving costs down. But the real failure of imagination isn't about the risks, but the reward. Debating the plant means never getting to the world the plant makes possible.</p>
+      <p>Economists have shown that higher energy consumption directly increases economic growth, and the causality runs both directions. Cheap, carbon-free, always-on power doesn't just replace what we burn today. It makes entirely new things possible. Desalination turns coastlines into freshwater sources. Vertical farms grow food without weather, without seasons, without pesticides, stacked high in buildings that use a fraction of the land. Synthetic fuels and plastics can be made from air, water, and electricity with no drilling required. New cities can rise in places that water scarcity and grid dependency once made impossible. Transportation gets faster, cheaper, and farther-reaching. The developing world can leapfrog the infrastructure bottlenecks that have kept billions in poverty.</p>
+      <p>That's the vision we're asking you to make visible.</p>
+      <p>We're not looking for soft-focus solarpunk landscapes. We're looking for specificity: real places, real problems, real futures. The film should make viewers feel the weight of what energy poverty costs and the scale of what abundant, clean, baseload power unlocks. Research the economics. Understand the stakes. The most compelling entries will be the ones that have done the work to know what they're depicting and why it matters.</p>
+      <p>A good starting point: the paper <a href="https://thecgo.org/research/energy-superabundance" target="_blank" rel="noopener" style="color:var(--text);">"Energy Superabundance"</a> by Austin Vernon and Eli Dourado at the Center for Growth and Opportunity, which lays out in detail what a world of radically cheaper, more plentiful energy actually looks like, from flying cars to indoor farming to new cities to a coming carbon shortage.</p>
+      <p>The best version of this film doesn't argue for nuclear. It assumes nuclear has already won, and shows us what that victory looks like for the seven-year-old in Lagos, the farmer in Rajasthan, the builder in S&atilde;o Paulo, and the family in rural Appalachia. From the reactor to the world it powers. That's the story.</p>
+    </div>
+    <button class="copy-btn" onclick="copyCommission(this)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    <div class="commission-nav" id="nav-after-the-reactor"></div>
+  </div>
+
+  <div class="email-signup">
+    <p>Want to commission a film? More commissions are coming. Leave your email and we'll let you know when the next round opens.</p>
+    <form class="email-signup-form" name="notify" method="POST" data-netlify="true" netlify-honeypot="bot-field-2" action="notify-success.html">
+      <input type="hidden" name="form-name" value="notify">
+      <input type="hidden" name="bot-field-2">
+      <input type="email" name="email" required placeholder="your@email.com" aria-label="Email address">
+      <button type="submit">Notify Me</button>
+    </form>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SUBMIT -->
+<section id="submit" class="page-section top-align">
+  <svg class="arc" viewBox="0 0 1200 1200"><circle cx="600" cy="600" r="550"/></svg>
+  <h2 class="page-heading">Submit</h2>
+  <div class="submit-content">
+    <p>Half of every bounty is distributed by peer vote among the creators who submitted. The better your work, the more you earn.</p>
+    <p>Make a film responding to one of the five open commissions. Any format: AI generated, live action, animation, hybrid, experimental. Any tools. Any country. Five minutes or less.</p>
+    <p class="submit-filmmaker">No gatekeepers, no algorithms, no followers required.</p>
+    <p>Post your finished film as an unlisted video on YouTube or Vimeo, then submit the link below. Your title, still frame, and description will appear in the public gallery on the <a href="voting.html" style="color:var(--text);">Voting</a> page beginning May 29.</p>
+
+    <form class="submission-form" name="submissions" method="POST" data-netlify="true" netlify-honeypot="bot-field-3" action="success.html">
+      <input type="hidden" name="form-name" value="submissions">
+      <input type="hidden" name="bot-field-3" style="display:none;">
+
+      <div class="form-group">
+        <label class="form-label" for="name">Name</label>
+        <input class="form-input" type="text" id="name" name="name" required placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-input" type="email" id="email" name="email" required placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="commission">Commission</label>
+        <select class="form-select" id="commission" name="commission" required>
+          <option value="" disabled selected>Select a commission</option>
+          <option value="first-sorrow">First Sorrow ($250)</option>
+          <option value="the-presidents-face">The President's Face ($100)</option>
+          <option value="proof-of-energy">Proof of Energy ($500)</option>
+          <option value="what-is-it-like-to-be-an-ai">What Is It Like to Be an AI? ($750)</option>
+          <option value="after-the-reactor">After the Reactor ($1,000)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="film-title">Film Title</label>
+        <input class="form-input" type="text" id="film-title" name="film-title" required placeholder="Title of your film">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="video-link">Video Link</label>
+        <input class="form-input" type="url" id="video-link" name="video-link" required placeholder="Unlisted YouTube or Vimeo URL">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="still-frame">Still Frame <span class="optional">(optional)</span></label>
+        <input class="form-input" type="url" id="still-frame" name="still-frame" placeholder="URL to a representative image from your film">
+        <p class="form-note" style="margin-top: 4px; opacity: 0.3;">If you don't provide one, we'll pull a frame from your video.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="description">Description <span class="optional">(150 characters)</span></label>
+        <input class="form-input" type="text" id="description" name="description" required maxlength="150" placeholder="A one-line hook for your film">
+        <p class="form-note char-count" style="margin-top: 4px; opacity: 0.3;">0 / 150</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="lightning">Lightning Address</label>
+        <input class="form-input" type="text" id="lightning" name="lightning-address" required placeholder="you@strike.me">
+        <p class="form-note" style="margin-top: 4px;">Don't have one? <a href="https://strike.me/" target="_blank" rel="noopener" style="color:var(--text);">Strike</a> or <a href="https://getalby.com/" target="_blank" rel="noopener" style="color:var(--text);">Alby</a> will set you up in minutes. <a href="wallets.html" style="color:var(--text);">See all options.</a></p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="referral">How did you hear about Ordain? <span class="optional">(optional)</span></label>
+        <input class="form-input" type="text" id="referral" name="referral" placeholder="">
+      </div>
+
+      <div class="form-checkbox-row">
+        <input type="checkbox" id="notify-me" name="notify-round2" value="yes">
+        <label class="form-checkbox-label" for="notify-me">Notify me when Round 2 opens and anyone can commission a project.</label>
+      </div>
+
+      <button type="submit" class="form-submit">Submit Film</button>
+
+      <p class="form-note">Public gallery opens May 29. Entries close May 31, 2026. Peer voting runs June 1 to 7. Winners announced and paid out June 7. You may submit to more than one commission, but only one film per commission. By submitting, you agree to participate in <a href="voting.html" style="color:var(--text);">peer voting</a>.</p>
+      <p class="form-terms">By submitting, you agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Participation</a>.</p>
+    </form>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ABOUT + FAQ -->
+<section id="about" class="page-section top-align">
+  <svg class="arc" viewBox="0 0 1200 1200"><circle cx="600" cy="600" r="550"/></svg>
+  <h2 class="page-heading">Ars Ordinandi</h2>
+  <p class="about-gloss"><strong>ars ordinandī</strong>&nbsp;&nbsp;the art of ordaining; the craft of setting in order.</p>
+
+  <figure class="about-figure">
+    <picture>
+      <source srcset="ur-nanshe.webp" type="image/webp">
+      <img src="ur-nanshe.jpg" alt="Limestone relief of Ur-Nanshe of Lagash, c. 2500 BCE, depicting the king carrying a ceremonial basket of earth for temple construction." loading="lazy">
+    </picture>
+    <figcaption>Relief of Ur-Nanshe of Lagash, c. 2500 BCE&nbsp;&middot;&nbsp;Musée du Louvre</figcaption>
+  </figure>
+
+  <div class="about-text">
+    <p>If you want a specific creative work to exist, your options are to make it yourself or hope someone else happens to make it. There is no infrastructure for saying "I want this" and putting money behind it and watching it get made. A thousand people who want the same film don't know about each other. They can wait. They can hope. They can't act.</p>
+    <p>Ordain is where they act. You describe the work you want to see exist, you put money behind it, other people who want the same thing find you, creators compete to make it, and the best version wins. Payment settles instantly over Bitcoin Lightning, anywhere on earth.</p>
+    <p class="about-filmmaker">If you make films, this is paid work. No application, no fee, no platform cut.</p>
+    <p>The mechanism works for film, music, writing, games, and forms that don't have names yet. It makes no assumption about who is doing the wanting or the making.</p>
+    <p class="about-essay-link">A conversation about all of this: <a href="https://substack.com/home/post/p-195453416" target="_blank" rel="noopener">Ars Ordinandi ↗</a></p>
+  </div>
+
+  <div class="about-social">
+    <a href="https://x.com/ordainart" target="_blank" rel="noopener">X</a>
+    <a href="https://www.instagram.com/ordain.art/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://www.youtube.com/@ordainart" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://ordain.substack.com/" target="_blank" rel="noopener">Substack</a>
+    <a href="https://primal.net/p/nprofile1qqsqwgz42gezghr9zdt6x6qrr42vnlj6dyk28aclxq9tc6xpr3z56ds2hgj3g" target="_blank" rel="noopener">Nostr</a>
+    <a href="https://www.facebook.com/profile.php?id=61588449573338" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://www.linkedin.com/company/111663898" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+
+  <p class="faq-label">Frequently Asked Questions</p>
+
+  <div class="faq-item">
+    <p class="faq-q">What is Ordain?</p>
+    <p class="faq-a">A commission board. You describe a film you want made, put money behind it, filmmakers compete to make it, and you help decide who gets paid.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">So, decentralized patronage.</p>
+    <p class="faq-a">Decentralized patronage. At any scale.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">How is this different from Kickstarter or Patreon?</p>
+    <p class="faq-a">On those platforms, creators decide what gets made and audiences decide whether to fund it. Ordain reverses that. The buyers define what gets made, pool money behind it, and vote on which execution wins. The buyers are the creative directors.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What's the closest precedent for this?</p>
+    <p class="faq-a">Bitcoin. It made value move between strangers at planetary scale without an intermediary. Ordain does the same for commissioning creative work. The local practice already existed in both cases: you could always send cash to your neighbor, you could always commission a portrait from a friend. What changes is the radius.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Why couldn't this have existed five years ago?</p>
+    <p class="faq-a">Three things had to be true at once. Lightning had to be mature enough to settle real payments in seconds, anywhere, for any amount. AI tools had to be good enough that a creator could answer a brief in an afternoon instead of a year. And open protocols had to be a real alternative to closed platforms.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What happens when more than one person wants the same thing?</p>
+    <p class="faq-a">They find each other. One patron posts a commission. Another patron sees it and chips in. Now they're both stakeholders. As the bounty grows, more creators show up to compete for it, and the quality of submissions rises with the stakes. Nobody planned it. A thousand people who wanted the same film just didn't know about each other until there was a place to say so. Ordain is that place.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">How specific should my brief be?</p>
+    <p class="faq-a">Specific enough to evaluate submissions against, but open enough that an artist can surprise you. A good brief gives a clear arc and a tone. "A colorful, accurate educational flow of captured methane from a city landfill into Bitcoin via mining" is a good brief. "Make something cool about energy" is not. You're the creative director. Tell the filmmaker what you want to see, then let them figure out how to show it to you.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">How does payment work?</p>
+    <p class="faq-a">Bitcoin Lightning. It's the only payment rail that can move any amount of money, to any country, instantly, with no middleman. Ordain coordinates payouts on behalf of commissioners but does not hold funds in escrow or maintain accounts. We're a commission board, not a bank.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Why Bitcoin?</p>
+    <p class="faq-a">Because nothing else works globally at every price point. A credit card processor takes a 10% cut on a $5 transaction. A wire transfer costs more than the bounty is worth. PayPal doesn't operate in half the countries where creators live. Lightning works anywhere, at any amount, with no settlement delay. For a commission board that's open to anyone on earth, that's the only payment rail that fits.</p>
+    <p class="faq-a">There's a deeper reason too. No one can shut it down. A platform that processes payments through banks can be deplatformed, sanctioned, or pressured into removing creators. A protocol that settles on Lightning can't. Once Ordain is fully built, a commissioner in any country can pay a creator in any other country, and no intermediary, including us, has the power to stop it.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What if I don't have a Lightning wallet?</p>
+    <p class="faq-a">Get one. It takes a few minutes. We have a short guide at <a href="wallets.html" style="color:var(--text);">ordain.art/wallets</a> covering the options for creators in the US, Europe, and most of the rest of the world. If you're in New York or somewhere Strike doesn't operate, the guide covers that too.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Who votes?</p>
+    <p class="faq-a">Half the bounty is awarded by the commissioner. The other half is decided by ranked choice voting among the creators who submitted.</p>
+    <p class="faq-a">The split is deliberate. A commissioner-only vote invites capture and race-to-the-bottom pricing. A creator-only vote invites collusion. Splitting the decision keeps both sides honest.</p>
+    <p class="faq-a"><a href="voting.html" style="color:var(--text);">Full details on how voting works.</a></p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Why commission a film when AI video is everywhere?</p>
+    <p class="faq-a">Because nobody's making the one you want. There's more AI content than ever, but it's all supply with no demand signal. A commission is a specific vision backed by real money. That changes what gets made and how seriously a filmmaker takes it.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Why only short films? What about games, music, VR?</p>
+    <p class="faq-a">We're starting with short films. But the mechanism works for games, music, VR, and forms that don't even have names yet.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What do I get as a commissioner?</p>
+    <p class="faq-a">The finished video file. Screen it, post it, submit it to festivals, keep it private. It's yours to use. The creator retains copyright and can show it in their portfolio or exhibit it elsewhere, but the work was made for you.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">How much do commissions pay?</p>
+    <p class="faq-a">It varies. This round, commissions range from $100 to $1,000. AI tools are good enough now that a short film might only take someone an afternoon. We're testing different amounts to see what draws participation and what quality of work each level produces. The briefs vary too. Some are wide open, others are specific. That's deliberate. We're learning what kind of direction produces the best work.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What if I don't like any of the submissions?</p>
+    <p class="faq-a">The deadline extends. We don't refund bounties. A commission that can evaporate isn't a real commission. Your money stays on the board until the work gets made.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Who can submit?</p>
+    <p class="faq-a">Anyone. Any tools, any country. AI, live action, animation, hybrid. If it's a film, it qualifies. Creators work on spec. The number of competing submissions is visible on each commission, so you can decide for yourself whether the bounty is worth your time.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Can I submit AI-generated work?</p>
+    <p class="faq-a">Yes. AI, live action, animation, hybrid, experimental: if it's a film, it qualifies. Most of the commissions on the board right now are open to any tools, and the Future of Money AI Film Contest with Bitcoin FilmFest is specifically for short films made with AI tools. What matters is whether the work answers the brief.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Who owns the work?</p>
+    <p class="faq-a">Creators retain full ownership. Ordain gets a non-exclusive license to display and reference the work on the platform. The commissioner gets a perpetual, non-exclusive license to use the finished work.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What are my rights as a creator?</p>
+    <p class="faq-a">The commissioner gets to use the finished work however they choose. That's what a commission is. But if the work appears in a context you find objectionable, you can request your name be disassociated from it. For now, the bounty is your compensation. Programmable royalty splits are on the roadmap but not built yet.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What's happening now?</p>
+    <p class="faq-a">Round 1 is live. Five commissions from five founding commissioners. Public gallery of submissions opens May 29. Submissions close May 31. Peer voting runs June 1 to 7. Winners announced and paid out June 7.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What happens after Round 1?</p>
+    <p class="faq-a">Ordain is partnering with Bitcoin FilmFest for the Future of Money AI Film Contest, running alongside Round 1 through May 31. Three contest tracks with $2,500 in prizes, finalists screening in Warsaw. After Round 1 winners are paid, anyone will be able to post a commission. Same structure: post a brief and a payment, creators compete, stakeholders vote, funds transfer.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What are the terms?</p>
+    <p class="faq-a">Plain language terms of participation are posted on the site. The short version: creators retain copyright, commissioners get a license to use the work, Ordain gets a license to display it, payments are final, and disputes between commissioners and creators are between them.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">Is Ordain a platform or a protocol?</p>
+    <p class="faq-a">A platform now, a protocol later. The current site is where Round 1 is running. What we're building toward is an open commissioning protocol that anyone can implement and run. Ordain itself becomes one venue among many.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What's the business model?</p>
+    <p class="faq-a">Right now we don't make money. These rounds are testing whether commissions attract competitive work at low bounty levels. Long term, a 1% fee on each commission.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What changes if this works at scale?</p>
+    <p class="faq-a">The unit of creative work shrinks. Right now a piece has to be big enough to justify the apparatus around it: a novel rather than a story, a feature rather than a short. Ordain makes the minimum viable commission small, so more, smaller, more specific work gets made. The geography of who makes work for whom shifts too. A documentary about Addis funded by a wealthy Ethiopian patron goes to filmmakers in Addis at a price that's substantial there and modest in dollar terms. Whose camera is pointed at whom changes. And patronage stops being a luxury good. Anyone with $40 can commission a real piece of work, which means a social form that used to require serious capital becomes available at fan scale.</p>
+  </div>
+  <div class="faq-item">
+    <p class="faq-q">What's the longer arc?</p>
+    <p class="faq-a">The class composition of who becomes an artist broadens. If a working writer or filmmaker can reliably make $40,000 a year on commissions while building a body of work, the calculus on whether to attempt the career changes for everyone who'd otherwise need a trust fund or a working spouse. That's a slow effect, measured in generations, and probably the largest one. And commissioning stops being just for art. Research questions, open-source software features, local journalism, civic infrastructure proposals: anywhere a specific person or community wants a specific thing to exist and is willing to pay for it. The protocol becomes a general primitive for the bespoke production of public-facing work.</p>
+    <p class="faq-a">Right now, if you want a specific creative work to exist, your only option is to make it yourself or hope someone else happens to make it. Ordain closes that gap. You describe what you want. You put money behind it. Other people who want the same thing find you. Creators compete to make it real. The best version wins.</p>
+    <p class="faq-a">The mechanism makes no assumption about who is doing the wanting or the making. A human commissioner posts one bounty a month. An agent with a budget and a set of aesthetic parameters posts a thousand. The supply side scales to meet that demand because the same tools that let agents commission work also let them compete to make it. The loop closes. The marketplace generates its own supply and its own demand. Wherever there is a person with a vision and a creator who can realize it, there is a transaction waiting to happen.</p>
+    <p class="faq-a">Ordain is where you go to make it happen.</p>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <span>&copy; 2026 Ordain</span>
+  <span class="foot-sep">&middot;</span>
+  <a href="mailto:john@ordain.art">john@ordain.art</a>
+  <span class="foot-sep">&middot;</span>
+  <a href="terms.html">Terms</a>
+  <span class="foot-sep">&middot;</span>
+  <a href="colophon.html">Colophon</a>
+</footer>
+
+<script>
+function copyCommission(btn) {
+  var commission = btn.closest('.commission');
+  var title = commission.querySelector('.commission-name').textContent;
+  var bounty = commission.querySelector('.commission-bounty').textContent;
+  var brief = commission.querySelector('.commission-brief').innerText;
+  var id = commission.id;
+  var text = title + ' (' + bounty + ')\n\n' + brief + '\n\nordain.art/#' + id;
+  var copyIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  var checkIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="copied-text">Copied</span>';
+  navigator.clipboard.writeText(text).then(function() {
+    btn.innerHTML = checkIcon;
+    setTimeout(function() { btn.innerHTML = copyIcon; }, 2000);
+  });
+}
+
+function toggleBio(el) {
+  var bio = el.closest('.commission').querySelector('.commissioner-bio');
+  bio.classList.toggle('open');
+}
+
+var commissionIds = ['first-sorrow','the-presidents-face','proof-of-energy','what-is-it-like-to-be-an-ai','after-the-reactor'];
+var commissionNames = {
+  'first-sorrow': 'First Sorrow',
+  'the-presidents-face': "The President\u2019s Face",
+  'proof-of-energy': 'Proof of Energy',
+  'what-is-it-like-to-be-an-ai': 'What Is It Like to Be an AI?',
+  'after-the-reactor': 'After the Reactor'
+};
+
+function buildCommissionNav() {
+  commissionIds.forEach(function(id) {
+    var navEl = document.getElementById('nav-' + id);
+    if (!navEl) return;
+    var html = '';
+    commissionIds.forEach(function(otherId) {
+      var cls = otherId === id ? 'current' : '';
+      html += '<a href="#' + otherId + '" class="' + cls + '">' + commissionNames[otherId] + '</a>';
+    });
+    navEl.innerHTML = html;
+  });
+}
+
+function handleHash() {
+  var hash = window.location.hash.replace('#', '');
+  document.querySelectorAll('.commission-nav').forEach(function(n) { n.classList.remove('visible'); });
+  if (commissionIds.indexOf(hash) !== -1) {
+    var navEl = document.getElementById('nav-' + hash);
+    if (navEl) navEl.classList.add('visible');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  buildCommissionNav();
+  handleHash();
+  var descInput = document.getElementById('description');
+  var charCount = document.querySelector('.char-count');
+  if (descInput && charCount) {
+    descInput.addEventListener('input', function() {
+      charCount.textContent = descInput.value.length + ' / 150';
+    });
+  }
+});
+
+window.addEventListener('hashchange', handleHash);
+</script>
+
+</body>
+</html>

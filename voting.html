@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voting — ORDAIN</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #66023C;
+  --warm-white: #FDF8F0;
+  --bg: var(--warm-white);
+  --text: var(--purple);
+  --border: var(--purple);
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+  font-family: 'Space Mono', monospace;
+  background: var(--bg); color: var(--text);
+  line-height: 1.65; -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.voting-content {
+  position: relative;
+  max-width: 680px;
+  padding: 140px clamp(24px, 5vw, 80px) 80px;
+  z-index: 1;
+}
+.arc {
+  position: absolute; pointer-events: none;
+  z-index: 0;
+  top: 30vh; right: -55vw; width: 110vw; height: 110vw;
+}
+.arc circle {
+  fill: none; stroke: var(--purple);
+  stroke-width: 3; opacity: 0.06;
+}
+@media (max-width: 600px) {
+  .arc { top: 20vh; right: -65vw; }
+}
+/* Site header — canonical, matches index.html byte-for-byte */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg);
+}
+.announce-bar {
+  background: #29ABE2;
+  padding: 10px clamp(24px, 5vw, 80px);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+  color: #fff;
+  border-bottom: 2px solid var(--purple);
+}
+.announce-bar a { text-decoration: none; color: #fff; }
+.announce-bar .announce-name, .announce-bar .announce-detail { color: #fff; }
+.announce-bar .announce-detail { opacity: 1; }
+.announce-bar .announce-cta { border-bottom-color: rgba(255,255,255,0.7); }
+.announce-left {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.announce-name {
+  font-weight: 700; font-size: 14px; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.announce-detail {
+  font-weight: 400; font-size: 13px; letter-spacing: 0.02em;
+  opacity: 0.5;
+}
+.announce-cta {
+  font-weight: 700; font-size: 13px; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid rgba(102,2,60,0.5);
+  padding-bottom: 2px; transition: opacity 0.2s;
+}
+.announce-cta:hover { opacity: 0.6; }
+.nav-inner {
+  padding: 24px clamp(24px, 5vw, 80px);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 16px;
+  text-decoration: none; color: var(--text);
+}
+.nav-logo svg { width: 32px; height: 38px; }
+.nav-logo span {
+  font-weight: 700; font-size: 14px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.nav-links { display: flex; gap: clamp(16px, 3vw, 40px); align-items: center; }
+.nav-links a {
+  font-weight: 700; font-size: 13px; letter-spacing: 0.12em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--text); opacity: 0.6; transition: opacity 0.2s;
+  padding: 6px 0;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-links a.nav-pill {
+  background: rgba(102,2,60,0.08);
+  padding: 6px 14px;
+  opacity: 1;
+}
+.nav-links a.nav-pill:hover { background: rgba(102,2,60,0.14); }
+
+@media (max-width: 900px) {
+  .voting-content { padding-top: 160px; }
+}
+@media (max-width: 600px) {
+  .nav-inner { padding: 14px 20px; }
+  .announce-bar { padding: 8px 20px; gap: 4px; flex-direction: column; align-items: flex-start; }
+  .announce-name { font-size: 12px; }
+  .announce-detail { font-size: 10px; }
+  .announce-cta { font-size: 10px; align-self: flex-start; }
+  .nav-logo svg { width: 24px; height: 29px; }
+  .nav-logo span { font-size: 11px; letter-spacing: 0.08em; }
+  .nav-logo { gap: 8px; }
+  .nav-links { gap: 16px; }
+  .nav-links a { font-size: 11px; letter-spacing: 0.08em; padding: 4px 0; }
+  .nav-links a.nav-pill { display: none; }
+  .voting-content { padding-left: 20px; padding-right: 20px; padding-bottom: 60px; }
+  h1 { font-size: clamp(36px, 9vw, 56px); margin-bottom: 32px; }
+}
+@media (max-width: 380px) {
+  .nav-inner { padding: 12px 16px; }
+  .announce-bar { padding: 6px 16px; }
+  .nav-links { gap: 12px; }
+  .nav-links a { font-size: 10px; }
+  h1 { font-size: 36px; }
+}
+h1, h2, p {
+  position: relative;
+  z-index: 1;
+}
+h1 {
+  font-weight: 700; font-size: clamp(48px, 8vw, 96px);
+  letter-spacing: 0.02em; text-transform: uppercase;
+  line-height: 1.05; margin-bottom: 48px;
+}
+h2 {
+  font-weight: 700; font-size: 16px; letter-spacing: 0.02em;
+  margin-top: 56px; margin-bottom: 16px; line-height: 1.4;
+}
+p {
+  font-weight: 400; font-size: 15px; letter-spacing: 0.01em;
+  line-height: 1.85; opacity: 0.85; margin-bottom: 16px;
+}
+a { color: var(--purple); }
+.gallery-notice {
+  margin-top: 56px; padding-top: 32px;
+  border-top: 1px solid var(--purple); opacity: 0.55;
+  font-weight: 400; font-size: 13px; letter-spacing: 0.02em;
+  line-height: 1.7;
+}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="announce-bar">
+    <a href="bff26.html">
+      <div class="announce-left">
+        <span class="announce-name">Future of Money AI Film Contest</span>
+        <span class="announce-detail">$2,500 in contest prizes · Warsaw, June 7, 2026</span>
+      </div>
+    </a>
+    <a href="bff26.html" class="announce-cta">Enter →</a>
+  </div>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg viewBox="0 0 32 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="12.5" stroke="currentColor" stroke-width="3.5"/>
+        <circle cx="16" cy="34.5" r="1.8" fill="currentColor"/>
+      </svg>
+      <span>Ordain</span>
+    </a>
+    <div class="nav-links">
+      <a href="bff26.html" class="nav-pill">Future of Money<span class="pill-full"> Contest</span></a>
+      <a href="index.html#commissions">Commissions</a>
+      <a href="index.html#submit">Submit</a>
+      <a href="voting.html">Voting</a>
+      <a href="index.html#about">About</a>
+    </div>
+  </div>
+</div>
+
+<div class="voting-content">
+
+<svg class="arc" viewBox="0 0 1200 1200"><circle cx="600" cy="600" r="550"/></svg>
+
+<h1>Voting</h1>
+
+<p>Every bounty is split into two pools.</p>
+
+<p>The commissioner controls 50% and distributes it however they choose. They can give it all to one film or split it among several. Their money, their call.</p>
+
+<p>The other 50% is the peer pool. It is distributed by the creators who submitted work to that commission.</p>
+
+<h2>Who Votes</h2>
+
+<p>If you submitted a film, you vote. Only creators who submitted to a given commission vote on that commission. No outside audience, no popularity contest.</p>
+
+<h2>How It Works</h2>
+
+<p>Each submission has a title, a still frame, and a short description written by the creator. The display order is randomized for every voter.</p>
+
+<p>Watch the other submissions. Rank your top 5. You cannot rank your own work. Your first choice gets 5 points, second gets 4, third gets 3, fourth gets 2, fifth gets 1. Points are totaled across all voters and converted to percentages. Those percentages determine how the peer pool is distributed.</p>
+
+<p>If a commission has fewer than 6 submissions, rank all of them except your own.</p>
+
+<h2>Why This Is Fair</h2>
+
+<p>Your vote does not affect your own payout. Your share of the peer pool is determined entirely by what the other creators gave you. Your vote and your payout are completely decoupled. Voting for garbage does not help you. Voting honestly costs you nothing.</p>
+
+<h2>Mandatory Participation</h2>
+
+<p>Voting is required to receive your share of the peer pool. If you submit work but do not vote, you forfeit your peer pool share. That share redistributes to the creators who did vote. You still receive whatever the commissioner allocated to you.</p>
+
+<h2>No Award</h2>
+
+<p>If no submission meets the standard, you can vote "no award." If "no award" wins a plurality, the submission deadline extends. The bounty stays on the board until the work gets made.</p>
+
+<h2>Transparency</h2>
+
+<p>Results, vote totals, and payouts are published publicly after each round.</p>
+
+<p class="gallery-notice">Submissions will be browsable on this page beginning May 29.</p>
+
+</div>
+
+</body>
+</html>

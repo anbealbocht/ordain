@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lightning Wallets — ORDAIN</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --purple: #66023C; --warm-white: #FDF8F0; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+  font-family: 'Space Mono', monospace;
+  background: var(--warm-white); color: var(--purple);
+  line-height: 1.8; -webkit-font-smoothing: antialiased;
+  padding: 80px clamp(24px, 5vw, 80px) 80px;
+  max-width: 680px;
+}
+.back {
+  display: inline-block; margin-bottom: 48px;
+  font-weight: 700; font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; text-decoration: none; color: var(--purple);
+  opacity: 0.5; transition: opacity 0.2s;
+}
+.back:hover { opacity: 1; }
+h1 {
+  font-weight: 700; font-size: clamp(28px, 4vw, 40px);
+  letter-spacing: 0.02em; text-transform: uppercase;
+  line-height: 1.1; margin-bottom: 12px;
+}
+.subtitle {
+  font-weight: 400; font-size: 12px; letter-spacing: 0.04em;
+  opacity: 0.4; margin-bottom: 48px;
+}
+h2 {
+  font-weight: 700; font-size: 16px; letter-spacing: 0.02em;
+  margin-top: 40px; margin-bottom: 16px; line-height: 1.4;
+}
+p {
+  font-weight: 400; font-size: 15px; letter-spacing: 0.01em;
+  line-height: 1.85; opacity: 0.85; margin-bottom: 16px;
+}
+a { color: var(--purple); }
+.wallet-option {
+  margin-bottom: 24px;
+}
+.wallet-name {
+  font-weight: 700; font-size: 14px; letter-spacing: 0.01em;
+  opacity: 1; margin-bottom: 2px;
+}
+.wallet-desc {
+  font-weight: 400; font-size: 14px; letter-spacing: 0.01em;
+  line-height: 1.85; opacity: 0.78; margin-bottom: 0;
+}
+.region-note {
+  font-weight: 400; font-size: 13px; letter-spacing: 0.01em;
+  line-height: 1.85; opacity: 0.7; margin-top: 24px; margin-bottom: 0;
+  padding-top: 16px; border-top: 1px solid rgba(102,2,60,0.1);
+}
+</style>
+</head>
+<body>
+<a href="index.html" class="back">← Ordain</a>
+<h1>Lightning Wallets</h1>
+<p class="subtitle">How to get a Lightning address so you can receive payment.</p>
+
+<p>To submit work on Ordain, you need a Lightning address. This is where your payout goes if you win. A Lightning address looks like an email address: yourname@provider.com. The right wallet depends on where you are.</p>
+
+<h2>United States (49 states)</h2>
+
+<div class="wallet-option">
+  <p class="wallet-name"><a href="https://strike.me/" target="_blank" rel="noopener">Strike</a></p>
+  <p class="wallet-desc">Free app for iOS and Android. Your Lightning address is yourname@strike.me. The simplest option for US users. Available in all states except New York.</p>
+</div>
+
+<div class="wallet-option">
+  <p class="wallet-name"><a href="https://getalby.com/" target="_blank" rel="noopener">Alby</a></p>
+  <p class="wallet-desc">Browser extension and mobile app. Your address is yourname@getalby.com. Works in all 50 states and globally.</p>
+</div>
+
+<h2>New York State</h2>
+
+<p>New York's BitLicense regulation prevents most custodial Lightning services from operating in the state. Strike, Cash App Lightning, Coinbase Lightning, and Wallet of Satoshi are all unavailable to New York residents.</p>
+
+<p>If you are in New York and have no access to a Lightning address, enter "NY" in the Lightning address field when submitting. If your work is selected, we will reach out to the email on your submission to arrange payment.</p>
+
+<h2>Africa</h2>
+
+<div class="wallet-option">
+  <p class="wallet-name"><a href="https://bitnob.com/" target="_blank" rel="noopener">Bitnob</a></p>
+  <p class="wallet-desc">Available in Nigeria, Ghana, Kenya, Togo, Benin, Ivory Coast, Senegal, and Rwanda. Your address is yourname@bitnob.io. Can settle directly to local bank accounts and mobile money.</p>
+</div>
+
+<div class="wallet-option">
+  <p class="wallet-name"><a href="https://8333.mobi/" target="_blank" rel="noopener">Machankura</a></p>
+  <p class="wallet-desc">Works via USSD, no smartphone or internet connection required. Available across multiple African countries. Your address is yourname@8333.mobi.</p>
+</div>
+
+</body>
+</html>
